@@ -150,7 +150,7 @@ public class UIScrollableVerticalLayout : UIAbstractTouchableContainer
 
 		// once we move too far unhighlight and stop tracking the touchable
 		if (Mathf.Abs(_deltaTouch) > TOUCH_MAX_DELTA_FOR_ACTIVATION && _activeTouchable != null) {
-			_activeTouchable.onTouchEnded(touch, touchPos, true);
+			_activeTouchable.onTouchEnded(touch, touchPos, false);
 			_activeTouchable = null;
 		}
 
