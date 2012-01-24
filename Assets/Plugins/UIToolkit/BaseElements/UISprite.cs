@@ -296,7 +296,45 @@ public class UISprite : UIObject, IPositionable
 		updateVertPositions();
 		updateTransform();
 	}
-	
+
+	public override void clipToRect(Rect r, bool recursive) {
+		var topContained = position.y < -r.yMin && position.y > -r.yMax;
+		var bottomContained = position.y - height < -r.yMin && position.y - height > -r.yMax;
+
+		// first, handle if we are fully visible
+		if (topContained && bottomContained) {
+			// unclip if we are clipped
+			if (clipped)
+				clipped = false;
+			hidden = false;
+		} else if (topContained || bottomContained) {
+			// wrap the changes in a call to beginUpdates to avoid changing verts more than once
+			beginUpdates();
+
+			hidden = false;
+
+			// are we clipping the top or bottom?
+			if (topContained) { // clipping the bottom
+				var clippedHeight = position.y + r.yMax;
+
+				uvFrameClipped = uvFrame.rectClippedToBounds(width / scale.x, clippedHeight / scale.y, false, manager.textureSize);
+				setClippedSize(width / scale.x, clippedHeight / scale.y, false);
+			} else { // clipping the top, so we need to adjust the position.y as well
+				var clippedHeight = height - position.y - r.yMin;
+
+				uvFrameClipped = uvFrame.rectClippedToBounds(width / scale.x, clippedHeight / scale.y, true, manager.textureSize);
+				setClippedSize(width / scale.x, clippedHeight / scale.y, true);
+			}
+
+			// commit the changes
+			endUpdates();
+		} else {
+			// fully outside our bounds
+			hidden = true;
+		}
+
+		base.clipToRect(r, recursive);
+	}
 
     /// <summary>
     /// Sets the vertex and UV buffers this sprite has been assigned

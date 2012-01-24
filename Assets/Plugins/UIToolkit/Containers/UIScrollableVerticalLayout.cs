@@ -101,84 +101,11 @@ public class UIScrollableVerticalLayout : UIAbstractTouchableContainer
 		}
 	}
 
-
-	private void ClipChild(UISprite child)
-	{
-		var topContained = child.position.y < -touchFrame.yMin && child.position.y > -touchFrame.yMax;
-		var bottomContained = child.position.y - child.height < -touchFrame.yMin && child.position.y - child.height > -touchFrame.yMax;
-
-		// first, handle if we are fully visible
-		if (topContained && bottomContained) {
-			// unclip if we are clipped
-			if (child.clipped)
-				child.clipped = false;
-			child.hidden = false;
-		}
-		else if (topContained || bottomContained) {
-			// wrap the changes in a call to beginUpdates to avoid changing verts more than once
-			child.beginUpdates();
-
-			child.hidden = false;
-
-			// are we clipping the top or bottom?
-			if (topContained) // clipping the bottom
- 						{
-				var clippedHeight = child.position.y + touchFrame.yMax;
-
-				child.uvFrameClipped = child.uvFrame.rectClippedToBounds(child.width / child.scale.x, clippedHeight / child.scale.y, false, child.manager.textureSize);
-				child.setClippedSize(child.width / child.scale.x, clippedHeight / child.scale.y, false);
-			}
-			else // clipping the top, so we need to adjust the position.y as well
- 						{
-				var clippedHeight = child.height - child.position.y - touchFrame.yMin;
-
-				child.uvFrameClipped = child.uvFrame.rectClippedToBounds(child.width / child.scale.x, clippedHeight / child.scale.y, true, child.manager.textureSize);
-				child.setClippedSize(child.width / child.scale.x, clippedHeight / child.scale.y, true);
-			}
-
-			// commit the changes
-			child.endUpdates();
-		}
-		else {
-			// fully outside our bounds
-			child.hidden = true;
-		}
-
-		// Recurse
-
-		RecurseChildren(child);
-
-	}
-	private void RecurseChildren(UIObject child)
-	{
-		foreach (Transform t in child.client.transform) {
-			UIElement uie = t.GetComponent<UIElement>();
-			if (uie != null) {
-				UIObject o = t.GetComponent<UIElement>().UIObject;
-				if (o != null) {
-					UISprite s = o as UISprite;
-					if (s != null) {
-						ClipChild(s);
-					}
-					else {
-						UITextInstance ti = o as UITextInstance;
-						if (ti != null) {
-							// Special handeling for text
-							foreach (UISprite glyph in ti.textSprites) {
-								ClipChild(glyph);
-							}
-						}
-						RecurseChildren(ti);
-					}
-				}
-			}
-		}
-	}
 	protected override void clipToBounds()
 	{
 		// clip hidden children
 		foreach (var child in _children) {
-			ClipChild(child);
+			child.clipToRect(touchFrame);
 		}
 	}
 
