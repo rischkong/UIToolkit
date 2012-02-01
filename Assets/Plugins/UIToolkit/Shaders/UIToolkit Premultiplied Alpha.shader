@@ -15,6 +15,7 @@ Shader "UIToolkit/Premultiplied Alpha"
 		Lighting Off
 		ZWrite Off
 		ZTest Always
+		Fog { Mode Off }
 		
 		BindChannels
 		{

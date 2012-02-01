@@ -15,6 +15,7 @@ Shader "UIToolkit/No Alpha"
 		Cull Off
 		Lighting Off
 		ZWrite On
+		Fog { Mode Off }
 		
 		BindChannels
 		{
