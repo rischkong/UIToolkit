@@ -40,13 +40,13 @@ public class UIText : System.Object
 	private struct UIFontCharInfo
 	{	
 		public int charID;
-		public int posX;
-		public int posY;
-		public int w;
-		public int h;
-		public int offsetx;
-		public int offsety;
-		public int xadvance;
+		public float posX;
+		public float posY;
+		public float w;
+		public float h;
+		public float offsetx;
+		public float offsety;
+		public float xadvance;
 	}
 	
 	/// <summary>
@@ -102,8 +102,9 @@ public class UIText : System.Object
 	/// </summary>
 	private void loadConfigfile( string filename )
 	{
+		float divider = UI.instance.isHD ? 1 : 2;
 		// should we load a double resolution font?
-		if( UI.instance.isHD )
+		//if( UI.instance.isHD )
 			filename = filename + UI.instance.hdExtension;
 	
 		var asset = Resources.Load( filename, typeof( TextAsset ) ) as TextAsset;
@@ -132,57 +133,57 @@ public class UIText : System.Object
 						if (idNum == 145 || idNum == 146 || idNum == 147 || idNum == 148)
 							hasLowAsciiQuotes = true;
 						
-						_fontDetails[idNum].charID = new int();
+						//_fontDetails[idNum].charID = new int();
 						_fontDetails[idNum].charID = idNum;
 					}
 					else if( string.Equals( word1, "x" ) )
 					{
 						string tmp = wordsSplit[1].Substring( 0, wordsSplit[1].Length );
 						forceLowAsciiChar( ref tmp );
-						_fontDetails[idNum].posX = new int();
-						_fontDetails[idNum].posX = System.Int32.Parse( tmp );
+						//_fontDetails[idNum].posX = new int();
+						_fontDetails[idNum].posX = System.Int32.Parse( tmp ) / divider;
 					}
 					else if( string.Equals( word1, "y" ) )
 					{
 						string tmp = wordsSplit[1].Substring( 0, wordsSplit[1].Length );
 						forceLowAsciiChar( ref tmp );
-						_fontDetails[idNum].posY = new int();
-						_fontDetails[idNum].posY = System.Int32.Parse( tmp );
+						//_fontDetails[idNum].posY = new int();
+						_fontDetails[idNum].posY = System.Int32.Parse( tmp ) / divider;
 					}
 					else if( string.Equals( word1, "width" ) )
 					{
 						string tmp = wordsSplit[1].Substring( 0, wordsSplit[1].Length );
 						forceLowAsciiChar( ref tmp );
-						_fontDetails[idNum].w = new int();
-						_fontDetails[idNum].w = System.Int32.Parse( tmp );
+						//_fontDetails[idNum].w = new int();
+						_fontDetails[idNum].w = System.Int32.Parse( tmp ) / divider;
 					}
 					else if( string.Equals( word1, "height" ) )
 					{
 						string tmp = wordsSplit[1].Substring( 0, wordsSplit[1].Length );
 						forceLowAsciiChar( ref tmp );
-						_fontDetails[idNum].h = new int();
-						_fontDetails[idNum].h = System.Int32.Parse( tmp );
+						//_fontDetails[idNum].h = new int();
+						_fontDetails[idNum].h = System.Int32.Parse( tmp ) / divider;
 					}
 					else if( string.Equals( word1, "xoffset" ) )
 					{
 						string tmp = wordsSplit[1].Substring( 0, wordsSplit[1].Length );
 						forceLowAsciiChar( ref tmp );
-						_fontDetails[idNum].offsetx = new int();
-						_fontDetails[idNum].offsetx = System.Int32.Parse(tmp);
+						//_fontDetails[idNum].offsetx = new int();
+						_fontDetails[idNum].offsetx = System.Int32.Parse(tmp) / divider;
 					}
 					else if( string.Equals( word1, "yoffset" ) )
 					{
 						string tmp = wordsSplit[1].Substring( 0, wordsSplit[1].Length );
 						forceLowAsciiChar( ref tmp );
-						_fontDetails[idNum].offsety = new int();
-						_fontDetails[idNum].offsety = System.Int32.Parse( tmp );
+						//_fontDetails[idNum].offsety = new int();
+						_fontDetails[idNum].offsety = System.Int32.Parse( tmp ) / divider;
 					}
 					else if( string.Equals( word1, "xadvance" ) )
 					{
 						string tmp = wordsSplit[1].Substring( 0, wordsSplit[1].Length );
 						forceLowAsciiChar( ref tmp );
-						_fontDetails[idNum].xadvance = new int();
-						_fontDetails[idNum].xadvance = System.Int32.Parse( tmp );
+						//_fontDetails[idNum].xadvance = new int();
+						_fontDetails[idNum].xadvance = System.Int32.Parse( tmp ) / divider;
 					}
 				} // end foreach
 			} // end foreach
@@ -453,7 +454,7 @@ public class UIText : System.Object
 	/// </summary>
 	private UISprite configureSpriteForCharId( UISprite sprite, int charId, float xPos, float yPos, float scale, int depth )
 	{
-		var uvRect = new UIUVRect( (int)_textureOffset.x + _fontDetails[charId].posX, (int)_textureOffset.y + _fontDetails[charId].posY, _fontDetails[charId].w, _fontDetails[charId].h, _manager.textureSize );
+		var uvRect = new UIUVRect( _textureOffset.x + _fontDetails[charId].posX, _textureOffset.y + _fontDetails[charId].posY, _fontDetails[charId].w, _fontDetails[charId].h, _manager.textureSize );
 		
 		// NOTE: This contains a bugfix from the previous version where offsetx was being used
 		// in the wrong spot according to the angelcode spec. xadvance is the complete character width

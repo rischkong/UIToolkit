@@ -8,7 +8,7 @@ public struct UIUVRect
 	public UIClippingPlane clippingPlane; // used internally for clipping
 	
 	private Vector2 _originalCoordinates; // used internally for clipping
-	private int _originalWidth; // used internally for clipping
+	private float _originalWidth; // used internally for clipping
 
 
 	/// <summary>
@@ -20,7 +20,7 @@ public struct UIUVRect
 	/// <summary>
 	/// Automatically converts coordinates to UV space as specified by textureSize
 	/// </summary>
-	public UIUVRect( int x, int y, int width, int height, Vector2 textureSize )
+	public UIUVRect( float x, float y, float width, float height, Vector2 textureSize )
 	{
 		_originalCoordinates.x = x;
 		_originalCoordinates.y = y;
