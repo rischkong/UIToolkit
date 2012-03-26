@@ -66,16 +66,18 @@ public class UISpriteManager : MonoBehaviour
 
 	virtual protected void Awake()
 	{
+		initMesh();
+	}
+
+	private bool alreadyInitMesh = false;
+	private void initMesh()
+	{
+		if (alreadyInitMesh)
+			return;
+		alreadyInitMesh = true;
+
 		_meshFilter = gameObject.AddComponent<MeshFilter>();
 		_meshRenderer = gameObject.AddComponent<MeshRenderer>();
-		
-		// Duplicate the standard material so that we're not changing the
-		// supplied one - it may be used by more than one UIToolkit object
-		Material duplicateMaterial = new Material (material.shader);
-		duplicateMaterial.CopyPropertiesFromMaterial(material);
-		material = duplicateMaterial;
-		
-		_meshRenderer.renderer.material = material;
 		_mesh = _meshFilter.mesh;
 
 		// Move the object to the origin so the objects drawn will not be offset from the objects they are intended to represent.
@@ -91,6 +93,12 @@ public class UISpriteManager : MonoBehaviour
 
 	public void loadTextureAndPrepareForUse()
 	{
+		initMesh();
+		// Duplicate the standard material so that we're not changing the
+		// supplied one - it may be used by more than one UIToolkit object
+		material = Instantiate(material) as Material;
+		_meshRenderer.renderer.material = material;
+
 		// load our texture, at 2x if necessary
 		if (UI.instance.isHD)
 			texturePackerConfigName = texturePackerConfigName + UI.instance.hdExtension;
