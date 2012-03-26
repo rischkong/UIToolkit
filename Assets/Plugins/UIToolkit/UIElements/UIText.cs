@@ -66,6 +66,7 @@ public class UIText : System.Object
 	public UITextVerticalAlignMode verticalAlignMode = UITextVerticalAlignMode.Top;
 	public UITextLineWrapMode wrapMode = UITextLineWrapMode.None;
 	public float lineWrapWidth = 500.0f;
+	public float kerningScale = 1.0f;
 	
 
 	/// <summary>
@@ -262,7 +263,7 @@ public class UIText : System.Object
 			
 			// See below @NOTE re: offsetx vs. xadvance bugfix.
 			// advance the position to draw the next letter
-			dx += _fontDetails[charId].xadvance * scale;
+			dx += _fontDetails[charId].xadvance * kerningScale * scale;
 		}
 		
 		alignLine( textInstance.textSprites, lineStartChar, lineEndChar, dx, instanceAlignMode );
@@ -462,8 +463,8 @@ public class UIText : System.Object
 		// Please note that yPos already has offsety built in.
 		var rect = new Rect( xPos + _fontDetails[charId].offsetx* scale,
 				             yPos, 
-				             _fontDetails[charId].w, 
-				             _fontDetails[charId].h);
+				             _fontDetails[charId].w * scale,
+				             _fontDetails[charId].h * scale );
 		
 		if( sprite == null )
 		{
